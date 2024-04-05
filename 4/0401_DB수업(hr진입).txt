@@ -1,0 +1,34 @@
+--professor 테이블에서 교수의 이름과 학과 명을 출력하되
+--학과 번호가 101번 이면 'Computer Engineering',
+--102 번이면 'Multimedia Engineering',
+--103 번이면 'Software Engineering'
+--나머지는 'ETC'로 출력하세요.
+select name,  
+case when deptno = 101 then 'Computer Engineering'
+     when deptno = 102 then 'Multimedia Engineering'
+     when deptno = 103 then 'Software Engineering'
+     else 'ETC'
+end 학과명  
+from professor;
+
+select name, 
+decode(deptno,101,'Computer Engineering',
+              102,'Multimedia Engineering',
+              103,'Software Engineering',
+              'ETC')
+from professor;
+              
+              
+--2) student
+--tel의 지역번호에서 02 서울, 051 부산, 052 울산, 053 대구
+--나머지는 기타로 출력
+--이름, 전화번호, 지역 출력
+select name, tel,
+case when substr(tel,1,2)='02' then '서울'
+     when substr(tel,1,3)='051' then '부산'
+     when substr(tel,1,3)='052' then '울산'
+     when substr(tel,1,3)='053' then '대구'
+          else '기타'
+end 지역번호
+from student;
+              
