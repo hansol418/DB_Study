@@ -155,7 +155,7 @@ select emp_seq.nextval
 from dual;
 drop SEQUENCE emp_seq;
 
---제약조건 p360 제약조선 ===> 데이터무결성
+--제약조건 p360 제약조건 ===> 데이터무결성
 --not null
 --unique
 --primary key(기본키) - not null / unique
