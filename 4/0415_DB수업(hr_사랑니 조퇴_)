@@ -1,0 +1,66 @@
+--1. Professor 테이블과 department 테이블을 조인하여 교수번호와 
+--교수이름, 소속학과 이름을 조회하는 view 생성 (v_prof_dept2)
+select * from professor;
+select * from department;
+
+create or replace view v_prof_dept2
+as
+select p.profno 교수번호, p.name 교수이름, d.dname 소속학과이름
+from professor p, department d
+where p.deptno = d.deptno;
+
+select * from v_prof_dept2;
+
+
+create or replace view v_prof_dept3
+as
+select p.profno 교수번호, p.name 교수이름, d.dname 소속학과이름
+from professor p, department d
+where p.deptno = d.deptno
+with read only; -- 읽기 전용
+
+
+--2. student, department 사용하여
+--학과별로 학생들의 최대키와 최대 몸무게, 학과 이름을 출력
+--(DNAME, MAX_HEIGHT, MAX_WEIGHT)
+select * from student;
+
+select deptno1, max(height), max(weight)
+from student 
+group by deptno1;
+
+select d.dname, s.deptno1, s.height, s.weight
+from student s, department d
+where s.deptno1= d.deptno
+and (s.deptno1, s.height, s.weight) in (select deptno1, max(height), max(weight)
+                                        from student 
+                                        group by deptno1);
+--인라인뷰
+select d.dname, s.deptno1, s.MAX_HEIGHT, s. MAX_WEIGHT
+from (select deptno1, max(height) MAX_HEIGHT, max(weight) MAX_WEIGHT
+      from student 
+      group by deptno1) s, department d
+where s.deptno1=d.deptno;      
+
+
+
+--3.학과이름, 학과별 최대키, 학과별로 가장 키가 큰 학생들의 이름과 키를
+--인라인 뷰를 이용하여 출력
+--DNAME, MAX_HEIGHT NAME HEIGHT
+
+select d.dname, a.MAX_HEIGHT, s.name, s.height
+from (select deptno1, max(height) MAX_HEIGHT
+      from student
+      group by deptno1) a, student s, department d
+where a.deptno1=s.deptno1 and s.deptno1=d.deptno
+      and a.max_height=s.height;
+      
+--join ~ on
+select d.dname, a.MAX_HEIGHT, s.name, s.height
+from (select deptno1, max(height) MAX_HEIGHT
+      from student
+      group by deptno1) a join student s 
+                          on a.deptno1 = s.deptno1
+                          join department d
+                          on s.deptno1=d.deptno
+where a.max_height=s.height;
