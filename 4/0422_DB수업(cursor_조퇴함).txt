@@ -1,0 +1,71 @@
+-- cursor
+-- open fetch close ===> for loop end
+select * from emp where deptno=20;
+--20번부서에 속한 사원번호, 이름,급여  출력
+DECLARE
+    vemp emp%rowType;
+    cursor c1 is
+    select empno, ename, sal
+    from emp
+    where deptno=20;
+begin
+    DBMS_OUTPUT.PUT_LINE('번호  이름 급여');
+    for vemp  in c1 loop
+    exit when c1%notfound;
+        DBMS_OUTPUT.PUT_LINE(vemp.empno ||' '||vemp.ename ||' '||vemp.sal);
+    end loop; 
+end;
+/
+
+----emp 테이블의 모든 사원 이름과 급여 출력하고 회원들의 급여 합도 출력
+select ename, sal from emp;
+select sum(sal) from emp;
+
+DECLARE
+    total number :=0;
+    cursor emp_cursor is
+    select ename, sal
+    from emp;
+BEGIN
+    for  cur_var in  emp_cursor loop
+    exit when emp_cursor%notfound;
+     total := total + cur_var.sal; -- 800=0+800 / 2400=800+1600 /3650 =2400+1250
+     dbms_output.put_line(cur_var.ename || ' ' || cur_var.sal);
+    end loop;
+    dbms_output.put_line('총급여액 : '||total);
+end;
+/
+----
+select ename, sal from emp order by sal desc;
+--사원별 급여현황 급여의 내림차순으로 출력
+--이름 별표(100 에 별표하나) <- 반올림(sal)
+-- 예) JAMES(950)  :  JAMES **********(950)
+
+DECLARE
+    CURSOR star_cursor is
+    select ename, sal 
+    from emp
+    order by sal desc;
+    
+    cnt number:=0 ; --별표갯수
+    star varchar2(100);
+
+BEGIN
+    dbms_output.put_line('--사원별 급여 현황 ----');
+    for cur_var in star_cursor loop
+        cnt :=round(cur_var.sal/100);
+        star := null;
+        for i  in 1..cnt loop    -- 별표출력
+            star := star || '*';
+        end loop;
+        dbms_output.put_line(cur_var.ename ||' '||star||' '||cur_var.sal);
+    end loop;
+end;
+/
+
+
+
+
+
+
+
