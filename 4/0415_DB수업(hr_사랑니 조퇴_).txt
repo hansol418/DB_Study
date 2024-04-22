@@ -64,3 +64,15 @@ from (select deptno1, max(height) MAX_HEIGHT
                           join department d
                           on s.deptno1=d.deptno
 where a.max_height=s.height;
+--4. student 학생의 키가 동일 학년의 평균 키보다 큰 학생의 학년과 이름과
+--키, 해당 학년의 평균키 출력 (인라인뷰 이용, 학년으로 오름차순)
+select grade, avg(height)
+from student
+group by grade;
+--
+select stu.grade, stu.name, stu.height, s.avg_height
+from (select grade, avg(height) avg_height
+        from student
+        group by grade) s, student stu
+where s.grade = stu.grade and   stu.height > s.avg_height
+order by stu.grade;
